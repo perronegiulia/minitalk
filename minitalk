@@ -1,0 +1,65 @@
+minitalk
+
+signals - interrupcoes no software, interrompe uma acao que ja esta acontecendo para executar outra acao. ex: bus errors ( caused by an attempt to access 
+"memory" that the machine simply cannot access because the address is invalid) 
+/ segfaults / ctrl+c
+
+quando um signal 'e ativado o processo manda um sinal p kernel que usa a funcao 
+sig_handler() pra tomar uma das tres acoes: ignore, catch ou default
+
+ignored - o processo nao tem resposta para essa interrupcao, alguns nao podem 
+ser ignorados ccmo o SIGKILL  e o SIGSTOP.
+
+caught -  o processo registra a funcao com o kernel pra administar a interrupcao
+
+default - executa o default behavior e isso indica que o processo ta usando o 
+sinal SIG_DFL
+
+para mandar um sinal precisa o target PID (process ID) e o sinal que vai ser mandando. ex existe um processo ativo com o PID 7328 e minha intencao 'e 
+terminar esse processo , para fazer isso uso o PID e o sinal que quero passar, 
+nesse caso SIGQUIT, desta forma:
+kill 7328 SIGQUIT
+kill 'e um comando usado pra mandar um sinal para os processos
+7328 'e o PID (process ID) do processo para o qual quero mandar o sinal
+SIGQUIT 'e o sinal que esta sendo mandado 
+
+SIGUSR1 e SIGUSR2 - sinais 
+
+
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+
+int g_sig; 
+
+void sig_handler(int sig)
+{
+	g_sig = sig;
+}
+
+
+int main(void)
+{
+	pid_t pid;
+
+	pid = getpid();
+
+	printf("%d\n", pid);
+
+	signal(SIGUSR1, sig_handler);
+	signal(SIGUSR2, sig_handler);
+	
+	while(1)
+	{
+		sleep(1);
+		if (g_sig == SIGUSR1)
+			printf("\nSignal passed: 1\n");
+		else if (g_sig == SIGUSR2) 
+			printf("\nSignal passed: 2\n");
+		g_sig = 0;
+	}
+	return(0);
+}
+
+
+
