@@ -1,55 +1,55 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <signal.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmaia-pe <gmaia-pe@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/22 20:26:18 by gmaia-pe          #+#    #+#             */
+/*   Updated: 2024/04/22 20:26:20 by gmaia-pe         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-int	ft_atoi(const char *str)
+#include "minitalk.h"
+
+void	send(int pid, unsigned char c)
 {
 	int	i;
-	int	p;
-	int	nb;
+	int	sig;
 
 	i = 0;
-	p = 1;
-	nb = 0;
-	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n' || str[i] == '\v'
-		|| str[i] == '\f' || str[i] == '\r')
-		i++;
-	if (str[i] == '-')
-		p = -1;
-	if (str[i] == '-' || str[i] == '+')
-		i++;
-	while (str[i] >= '0' && str [i] <= '9')
+	while (i < 8)
 	{
-		nb = nb * 10 + (str[i] - '0');
+		if ((c >> i) & 1)
+			sig = SIGUSR1;
+		else
+			sig = SIGUSR2;
+		kill(pid, sig);
+		usleep(100);
 		i++;
 	}
-	return (p * nb);
 }
 
-int main(int argc, char **argv)
+void	send_str(int pid, char *str)
 {
-	pid_t pid;
-	char c;
-	int i;
-	int mask;
+	int				i;
 
-	mask = 128;
 	i = 0;
-	c = 'b';
-	pid = ft_atoi(argv[1]);
-
-	while(i < 8)
+	while (str[i])
 	{
-		if (c & mask)
-			kill(pid, 10);
-		else 
-			kill(pid, 12);
-		sleep(1);
+		send(pid, (unsigned char)str[i]);
 		i++;
-		printf ("mask: %d\n", mask);
-		mask = mask >> 1;
 	}
-//	kill(pid, 10);
-//	sleep(2);
-//	kill(pid, 12);
+	send(pid, 0);
+}
+
+int	main(int argc, char **argv)
+{
+	pid_t	pid;
+
+	if (argc != 3)
+		return (0);
+	pid = ft_atoi(argv[1]);
+	send_str(pid, argv[2]);
+	return (0);
 }

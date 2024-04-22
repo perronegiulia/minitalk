@@ -1,40 +1,59 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <signal.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmaia-pe <gmaia-pe@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/22 20:27:23 by gmaia-pe          #+#    #+#             */
+/*   Updated: 2024/04/22 20:27:24 by gmaia-pe         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void sig_handler(int sig)
+#include "minitalk.h"
+
+void	sig_handler(int sig)
 {
-	static int i;
+	static unsigned char	byte;
+	static unsigned char	ib;
+	static char				*str;
 
-	if (sig == SIGUSR1)
+	if (sig == 10)
+		byte = byte | 1 << ib;
+	ib++;
+	if (ib == 8)
 	{
-		write(1, "1", 1);
-		i++;
+		str = ft_strjoinc(str, byte);
+		if (byte == 0)
+		{
+			write (1, str, ft_strlen(str));
+			write (1, "\n", 1);
+			free (str);
+			str = NULL;
+		}
+		byte = 0;
+		ib = 0;
 	}
-	else 
+	if (sig == SIGINT)
 	{
-		write(1, "0", 1);
-		i++;
+		free(str);
+		exit(0);
 	}
-	if (i % 8 == 0)
-		write(1, "\n", 1);
 }
 
-
-int main(void)
+int	main(void)
 {
-	pid_t pid;
+	pid_t	pid;
 
 	pid = getpid();
-
-	printf("%d\n", pid);
-
+	ft_putnbr(pid);
 	signal(SIGUSR1, sig_handler);
 	signal(SIGUSR2, sig_handler);
-	
-	while(1)
+	signal(2, sig_handler);
+	write (1, "\n", 1);
+	while (1)
 	{
 		sleep(1);
 	}
-	return(0);
+	return (0);
 }

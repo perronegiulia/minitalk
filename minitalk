@@ -63,3 +63,30 @@ int main(void)
 
 
 
+
+int main(int argc, char **argv)
+{
+	pid_t pid;
+	char c;
+	int i;
+	int mask;
+
+	mask = 128;
+	i = 0;
+	c = 'b';
+	a = 0;
+	pid = ft_atoi(argv[1]);
+
+	while(i < 8)
+	{
+		if (c & mask)
+			kill(pid, 10);
+			a = a | mask;
+		else 
+			kill(pid, 12);
+			a = a & 0;
+		sleep(1);
+		i++;
+		printf ("mask: %d\n", mask);
+		mask = mask >> 1;
+	}
