@@ -6,7 +6,7 @@
 /*   By: gmaia-pe <gmaia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/22 20:27:23 by gmaia-pe          #+#    #+#             */
-/*   Updated: 2024/04/22 20:27:24 by gmaia-pe         ###   ########.fr       */
+/*   Updated: 2024/04/23 17:00:40 by gmaia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	sig_handler(int sig)
 		if (byte == 0)
 		{
 			write (1, str, ft_strlen(str));
-			write (1, "\n", 1);
+			write (1, "\n\n", 2);
 			free (str);
 			str = NULL;
 		}

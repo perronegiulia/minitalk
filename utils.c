@@ -6,7 +6,7 @@
 /*   By: gmaia-pe <gmaia-pe@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 19:25:28 by gmaia-pe          #+#    #+#             */
-/*   Updated: 2024/04/22 20:27:41 by gmaia-pe         ###   ########.fr       */
+/*   Updated: 2024/04/24 16:30:49 by gmaia-pe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,5 +82,6 @@ char	*ft_strjoinc(char *str, char c)
 	}
 	res[i++] = c;
 	res[i] = 0;
-	return (free(str), res);
+	free (str);
+	return (res);
 }

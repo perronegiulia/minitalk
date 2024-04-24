@@ -1,0 +1,63 @@
+# Nome do programa
+NAME = MiniTalk
+
+# Compilador
+CC = gcc
+# Opções de compilação
+CFLAGS = -Wall -Wextra -Werror
+
+# Arquivos fonte do servidor e cliente
+SERVER_SRC = server.c utils.c
+CLIENT_SRC = client.c utils.c
+
+# Arquivos objeto gerados a partir dos arquivos fonte
+SERVER_OBJ = $(SERVER_SRC:.c=.o)
+CLIENT_OBJ = $(CLIENT_SRC:.c=.o)
+
+# Executáveis finais para o servidor e cliente
+SERVER_EXEC = server
+CLIENT_EXEC = client
+
+# Arquivo de cabeçalho usado pelos arquivos fonte
+HEADERS = minitalk.h
+
+# Diretivas especiais do Makefile
+.PHONY: all clean fclean re
+
+# Regra para construir tudo
+all: $(SERVER_EXEC) $(CLIENT_EXEC)
+
+# Regra para construir o executável do servidor
+$(SERVER_EXEC): $(SERVER_OBJ)
+	$(CC) $(CFLAGS) -o $@ $^
+
+# Regra para construir o executável do cliente
+$(CLIENT_EXEC): $(CLIENT_OBJ)
+	$(CC) $(CFLAGS) -o $@ $^
+
+# Regra para compilar um arquivo .c em um arquivo .o
+%.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Regra para limpar os arquivos objeto
+clean:
+	rm -f $(SERVER_OBJ) $(CLIENT_OBJ)
+
+# Regra para limpar os arquivos objeto e os executáveis
+fclean: clean
+	rm -f $(SERVER_EXEC) $(CLIENT_EXEC)
+
+# Regra para reconstruir tudo
+re: fclean all
+
+
+
+   # Variáveis: São definidas para armazenar nomes de arquivos, comandos de compilação e outras informações relevantes.
+   # Diretivas .PHONY: Indicam ao Make que os alvos especificados não correspondem a arquivos reais, mas a comandos específicos.
+   # Regras:
+   #     all: Constrói todos os alvos especificados, que neste caso são os executáveis do servidor e do cliente.
+   #     $(SERVER_EXEC) e $(CLIENT_EXEC): São as regras para construir os executáveis do servidor e do cliente, respectivamente. Eles dependem dos arquivos objeto correspondentes.
+   #     %.o: Esta regra é uma regra de "curinga", que diz ao Make como compilar qualquer arquivo .c em um arquivo .o. Os arquivos objeto dependem dos arquivos fonte correspondentes e do arquivo de cabeçalho minitalk.h.
+   #     clean: Remove os arquivos objeto.
+   #     fclean: Remove os arquivos objeto e os executáveis.
+   #     re: Remove tudo e reconstrói tudo novamente. 
